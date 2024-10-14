@@ -47,6 +47,8 @@ jobs:
           nuitka-version: main
           script-name: main.py
           mingw64: true
+          standalone: true
+          enable-plugins: tk-inter
       #Github Release Tag erstellen
     - name: Generate release tag
       id: generate_release_tag
