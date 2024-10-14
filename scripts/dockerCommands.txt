@@ -1,0 +1,5 @@
+# Build
+docker build -t test .
+
+# Create Container and join console
+docker run -it --name mein-container-name1 test /bin/bash
