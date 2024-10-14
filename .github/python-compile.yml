@@ -1,0 +1,69 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python application
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    runs-on: windows-latest
+
+    steps:
+      #Aktuellen code holen
+    - uses: actions/checkout@v3
+      #Python installieren
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+      #Pakete installieren
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        pip install -r requirements.txt
+      #Code auf fehler überprüfen
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 ./main.py --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 ./main.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      #Python zu einer exe Kompilieren
+    - uses: Nuitka/Nuitka-Action@main
+      with:
+          nuitka-version: main
+          script-name: main.py
+          mingw64: true
+      #Github Release Tag erstellen
+    - name: Generate release tag
+      id: generate_release_tag
+      uses: amitsingh-007/next-release-tag@v4.0.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        tag_prefix: 'v'
+        tag_template: 'yyyy.mm.dd.i'
+      #Github Release mit Release Tag und den Kompilierten Dateien erstellen
+    - uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        automatic_release_tag: ${{ steps.generate_release_tag.outputs.next_release_tag }}
+        prerelease: false
+        title: Release ${{ steps.generate_release_tag.outputs.next_release_tag }}
+        files: |
+          README.md
+          build/*.exe
+          
+          
