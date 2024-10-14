@@ -1,3 +1,9 @@
+#Nuitka build
+main.build/
+main.dist/
+main.onefile-build/
+main.exe
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
