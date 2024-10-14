@@ -3,6 +3,5 @@ services:
   app:
     build: .
     command: sh /scripts/build.sh
-  run:
-    build: .
-    command: python3 /src/app.py
+    volumes:
+      - ./build:/build

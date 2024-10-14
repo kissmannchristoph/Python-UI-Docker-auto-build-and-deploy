@@ -1,3 +1,4 @@
 tk
 flake8
 nuitka==2.4.9
+zstandard
