@@ -1,0 +1,35 @@
+name: Check for errors
+
+on:
+  pull_request:
+    branches: [ "release" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    runs-on: windows-latest
+
+    steps:
+      #Aktuellen code holen
+    - uses: actions/checkout@v4
+      #Python installieren
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+      #Pakete installieren
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        pip install -r requirements.txt
+      #Code auf fehler überprüfen
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 ./src/app.py --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide --exit-zero
+        flake8 ./src/app.py --count --max-complexity=10 --max-line-length=127 --statistics
