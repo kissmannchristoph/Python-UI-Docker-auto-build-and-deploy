@@ -3,6 +3,6 @@
 # https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/
 import tkinter as tk
 window = tk.Tk()
-greeting = tk.Label(text="Hello, Tkinter")
+greeting = tk.Label(text="Hello wixxxxa")
 greeting.pack()
 window.mainloop()
